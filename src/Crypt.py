@@ -3,7 +3,7 @@ from Crypto.Random import get_random_bytes
 
 # 初期化ベクトル（同じ平文でも異なる暗号化文字列にする効果がある）
 # バイト列で16バイト固定
-iv = get_random_bytes(16)
+iv = b'0123456789abcdef'
 
 #暗号化
 #引数：暗号化対象の文字列
