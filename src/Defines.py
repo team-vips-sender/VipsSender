@@ -9,3 +9,6 @@ class WALLET_LOCK_STATE:
     UNLOCK = 0
     STAKING_ONLY = 1
     LOCK = 2
+
+class EXTERNAL_FILE:
+    PATH = 'data.ini'
