@@ -25,7 +25,7 @@ print('Send to addresses : ', end="")
 print(vw.send({address1: '10', address2: '10'}))
 
 print('Back to original lock state : ', end="")
-print(vw.lock(password, lock_state))
+print(vw.lock(lock_state, password))
 
 # ----------------------------------------------
 print('===== Send too many amount =====')
@@ -37,7 +37,7 @@ print('Send to addresss : ', end="")
 print(vw.send({address1: '10000000000'}))
 
 print('Back to original lock state : ', end="")
-print(vw.lock(password, lock_state))
+print(vw.lock(lock_state, password))
 
 # ----------------------------------------------
 print('Unlock by wrong passphrase : ', end="")

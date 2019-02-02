@@ -30,7 +30,7 @@ class VipsWallet:
 
         return ret
 
-    def lock(self, password, lock_status):
+    def lock(self, lock_status, password):
         ret = STANDARD_RETURN.OK
         if lock_status != WALLET_LOCK_STATE.UNLOCK:
             result = self.rpc.walletlock()
