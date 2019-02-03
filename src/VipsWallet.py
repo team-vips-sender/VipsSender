@@ -7,6 +7,16 @@ class VipsWallet:
     def __init__(self):
         self.rpc = Client.RpcClient(ip='127.0.0.1')
 
+    def connect_test(self):
+        ret = STANDARD_RETURN.NOT_OK
+        try:
+            result = self.rpc.getinfo()
+            ret = self.__check_error('VipsWallet-connect_test', result)
+        except ConnectionError as e:
+            Logger.Logging('VipsWallet-connect_test : ' + str(e))
+        
+        return ret
+
     def get_lock_status(self):
         ret = STANDARD_RETURN.OK
         lock_state = WALLET_LOCK_STATE.UNLOCK

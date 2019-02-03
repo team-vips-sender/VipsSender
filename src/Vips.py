@@ -18,32 +18,35 @@ class Vips:
             Logger.Logging('Argument error : {0}'.format(send_info))
         
         else:
-            self.confirm = Confirm()
-            is_permitted = self.confirm.is_sending()
-            if is_permitted:
-                result, send_info = self.__compensate_argument(send_info)
-                
-                if result == STANDARD_RETURN.OK:
-                    result, wallet_lock_status = self.vips_wallet.get_lock_status()
+            result = self.vips_wallet.connect_test()
+            if result == STANDARD_RETURN.OK:
+            
+                self.confirm = Confirm()
+                is_permitted = self.confirm.is_sending()
+                if is_permitted:
+                    result, send_info = self.__compensate_argument(send_info)
                     
                     if result == STANDARD_RETURN.OK:
-                        result, password = self.__wallet_unlock()
+                        result, wallet_lock_status = self.vips_wallet.get_lock_status()
                         
                         if result == STANDARD_RETURN.OK:
-                            result = self.vips_wallet.send(send_info)
-
-                            # Confirmation of lock result is not necessary.
-                            # Reason:
-                            #   A conditional of lock fail is follow:
-                            #     (1) Password is inconsistent
-                            #     (2) Wallet was not encrypted and requested for LOCK or STAKING_ONLY
-                            #     (3) Other (e.g. wallet is not execution)
-                            #   (1) and (2) is improbable in logic of this function.
-                            #   If (3) occured, can not do anything.
-                            self.vips_wallet.lock(wallet_lock_status, password)
+                            result, password = self.__wallet_unlock()
                             
                             if result == STANDARD_RETURN.OK:
-                                ret = STANDARD_RETURN.OK
+                                result = self.vips_wallet.send(send_info)
+
+                                # Confirmation of lock result is not necessary.
+                                # Reason:
+                                #   A conditional of lock fail is follow:
+                                #     (1) Password is inconsistent
+                                #     (2) Wallet was not encrypted and requested for LOCK or STAKING_ONLY
+                                #     (3) Other (e.g. wallet is not execution)
+                                #   (1) and (2) is improbable in logic of this function.
+                                #   If (3) occured, can not do anything.
+                                self.vips_wallet.lock(wallet_lock_status, password)
+                                
+                                if result == STANDARD_RETURN.OK:
+                                    ret = STANDARD_RETURN.OK
     
         return ret
     

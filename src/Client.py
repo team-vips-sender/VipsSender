@@ -60,7 +60,10 @@ class RpcClient:
 
         data = json.dumps({"method": method, "params": params, "jsonrpc": "1.1"})
 
-        response = self.session.post(self.url, data=data)
+        try:
+            response = self.session.post(self.url, data=data)
+        except requests.exceptions.ConnectionError as e:
+            raise ConnectionError(e.args)
 
         if response.status_code != requests.codes.ok:
             return dict(response.json()["error"])
@@ -76,7 +79,12 @@ class RpcClient:
             batch_data.append({"method": req[0], "params": req[1], "jsonrpc": "2.0", "id": req_id})
 
         data = json.dumps(batch_data)
-        response = self.session.post(self.url, data=data).json()
+
+        try:
+            response = self.session.post(self.url, data=data).json()
+        except requests.exceptions.ConnectionError as e:
+            raise ConnectionError(e.args)
+
         return response
 
     ################################################################################
