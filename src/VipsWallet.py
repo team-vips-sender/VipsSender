@@ -52,21 +52,36 @@ class VipsWallet:
         return ret
 
     def send(self, send_info):
-        ret, balance = self.__get_balance()
-        if ret == STANDARD_RETURN.OK:
-            total_amount = 0
-            for amount in send_info.values():
-                total_amount += int(amount)
-            if int(balance) < total_amount:
-                Logger.Logging('VipsWallet-send : ' + 'Total amount is over balance.')
-                ret = STANDARD_RETURN.NOT_OK
+        ret = self.__check_addresses(send_info.keys())
 
         if ret == STANDARD_RETURN.OK:
-            for address, amount in send_info.items():
-                result = self.rpc.sendtoaddress(address, amount)
-                ret = self.__check_error('VipsWallet-send', result)
-                if ret == STANDARD_RETURN.NOT_OK:
-                    break
+            ret, balance = self.__get_balance()
+
+            if ret == STANDARD_RETURN.OK:
+                total_amount = 0
+                for amount in send_info.values():
+                    total_amount += int(amount)
+                if int(balance) < total_amount:
+                    Logger.Logging('VipsWallet-send : ' + 'Total amount is over balance.')
+                    ret = STANDARD_RETURN.NOT_OK
+
+            if ret == STANDARD_RETURN.OK:
+                for address, amount in send_info.items():
+                    result = self.rpc.sendtoaddress(address, amount)
+                    ret = self.__check_error('VipsWallet-send', result)
+                    if ret == STANDARD_RETURN.NOT_OK:
+                        break
+
+        return ret
+
+    def __check_addresses(self, addresses):
+        ret = STANDARD_RETURN.OK
+    
+        for address in addresses:
+            result = self.rpc.validateaddress(address)
+            if result['isvalid'] == False:
+                Logger.Logging('VipsWallet-check_address : Invalid address : {0}'.format(address))
+                ret = STANDARD_RETURN.NOT_OK
 
         return ret
 

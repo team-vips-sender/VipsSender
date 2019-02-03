@@ -438,3 +438,8 @@ class RpcClient:
         """"""
 
         return self.req("getinfo")
+
+    def validateaddress(self, address):
+        """"""
+
+        return self.req("validateaddress", [address])
