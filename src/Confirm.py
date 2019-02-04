@@ -1,5 +1,7 @@
 import tkinter as Tk
 import json
+import ExternalFile
+from Defines import STANDARD_RETURN
 
 #Tk.Frameクラスを継承
 class Confirm(Tk.Frame):
@@ -68,30 +70,18 @@ class Confirm(Tk.Frame):
 
     #次回以降確認しない情報を記憶する
     def save(self):
-        #一度jsonファイルを辞書型としてロードして要素を更新してから上書きする
-        with open('VipsSender.property', 'r') as f:
-            self.data = json.load(f)
-
-        with open('VipsSender.property', 'w') as f:
-            self.data['isconfirmflag'] = 'False'
-            json.dump(self.data,f,indent=4)
+        self.external_file.save('isconfirmflag', 'False')
 
     def is_sending(self):
+        #インスタンスを作成すると自動的にファイルが作られる
+        self.external_file = ExternalFile.ExternalFile('VipsSender.property')
         # 次回以降確認しない情報が読み出せればTrueを返却して終了
-        try:
-            with open('VipsSender.property', 'r') as f:
-                data = json.load(f)
-                # キーがあってFalseならＯＫ
-                if 'isconfirmflag' in data:
-                    if data['isconfirmflag'] == 'False':
-                        return True
-        # ファイルが無ければ空で作る
-        except FileNotFoundError:
-            with open('VipsSender.property', 'w') as f:
-                #デフォルトは確認画面を出す
-                data = {'isconfirmflag':'True'}
-                # 辞書型をjson形式にしてファイルに書き込み
-                json.dump(data, f, indent=4)
+        result = self.external_file.get('isconfirmflag')
+        if result[0] == 0 and result[1] == 'False':
+            return True
+        else:
+            #デフォルトは確認画面を出す
+            self.external_file.save('isconfirmflag', 'True')
 
         # ウィジェット作成
         self.__create_widgets()
