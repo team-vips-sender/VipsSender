@@ -1,7 +1,7 @@
 import tkinter as Tk
-import json
 import ExternalFile
 from Defines import STANDARD_RETURN
+from Defines import EXTERNAL_FILE
 
 #Tk.Frameクラスを継承
 class Confirm(Tk.Frame):
@@ -53,6 +53,11 @@ class Confirm(Tk.Frame):
         self.Button_cancel.grid(column=1, row=1,padx=10,pady=10)
         self.CheckButton_isConfirm.grid(column=0, row=2)
 
+    # 閉じるボタンが押されたら失敗を返却
+    def __on_closing(self):
+        self.master.destroy()
+        self.result = STANDARD_RETURN.NOT_OK
+
     #OKボタンが押されたときに実行される
     #成功を返却して閉じる
     # 「今後、このメッセージを表示しない」にチェックしていれば記憶
@@ -60,13 +65,13 @@ class Confirm(Tk.Frame):
         if self.IsConfirm.get():
             self.save()
         self.master.destroy()
-        self.result = True
+        self.result = STANDARD_RETURN.OK
 
     #キャンセルボタンが押されたときに実行される
     #失敗を返却して閉じる
     def __pressed_cancel(self):
         self.master.destroy()
-        self.result =  False
+        self.result = STANDARD_RETURN.NOT_OK
 
     #次回以降確認しない情報を記憶する
     def save(self):
@@ -74,17 +79,19 @@ class Confirm(Tk.Frame):
 
     def is_sending(self):
         #インスタンスを作成すると自動的にファイルが作られる
-        self.external_file = ExternalFile.ExternalFile('VipsSender.property')
+        self.external_file = ExternalFile.ExternalFile(EXTERNAL_FILE.PATH)
         # 次回以降確認しない情報が読み出せればTrueを返却して終了
         result = self.external_file.get('isconfirmflag')
         if result[0] == 0 and result[1] == 'False':
-            return True
+            return STANDARD_RETURN.OK
         else:
             #デフォルトは確認画面を出す
             self.external_file.save('isconfirmflag', 'True')
 
         # ウィジェット作成
         self.__create_widgets()
+        #閉じるボタンが押されたときの処理
+        self.master.protocol("WM_DELETE_WINDOW", self.__on_closing)
         #GUIを表示
         self.mainloop()
 

@@ -23,7 +23,7 @@ class Vips:
             
                 self.confirm = Confirm()
                 is_permitted = self.confirm.is_sending()
-                if is_permitted:
+                if is_permitted == STANDARD_RETURN.OK:
                     result, send_info = self.__compensate_argument(send_info)
                     
                     if result == STANDARD_RETURN.OK:
@@ -54,7 +54,11 @@ class Vips:
         ret = STANDARD_RETURN.NOT_OK
         
         self.password = Password()
-        password = self.password.get_password(False)
+        password_results = self.password.get_password(False)
+        password_ret = password_results[0]
+        password = password_results[1]
+        if password_ret == STANDARD_RETURN.NOT_OK:
+            return ret,password
         result = self.vips_wallet.unlock(password)
         
         if result == STANDARD_RETURN.OK:

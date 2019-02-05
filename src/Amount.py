@@ -61,6 +61,8 @@ class Amount(Tk.Frame):
         #数値以外と0以下と18桁以上はFalseを返す
         try:
             if float(amount) <= 0 or len(str(amount)) > 18:
+                tb = sys.exc_info()[2]
+                Logger.Logging("message:{0}".format(e.with_traceback(tb)))
                 return False,0
         except ValueError as e:
             tb = sys.exc_info()[2]
