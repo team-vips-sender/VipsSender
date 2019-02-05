@@ -40,6 +40,21 @@ print('Back to original lock state : ', end="")
 print(vw.lock(lock_state, password))
 
 # ----------------------------------------------
-print('Unlock by wrong passphrase : ', end="")
+print('===== Unlock by wrong passphrase =====')
+print('Unlock wallet : ', end="")
 print(vw.unlock(password + 'a'))
+
+# ----------------------------------------------
+print('===== Send to invalid addres =====')
+print('Unlock wallet : ', end="")
+print(vw.unlock(password))
+
+print('Send to addresss : ', end="")
+print(vw.send({'VxxxxxxxxxxxxxxxxxxxInvalidAddress': '1'}))
+
+print('Send to addresss : ', end="")
+print(vw.send({address1: '1', 'VxxxxxxxxxxxxxxxxxxInvalidAddress1': '1', 'VxxxxxxxxxxxxxxxxxxInvalidAddress2': '1', 'VxxxxxxxxxxxxxxxxxxInvalidAddress3': '1'}))
+
+print('Back to original lock state : ', end="")
+print(vw.lock(password, lock_state))
 
