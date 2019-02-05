@@ -1,6 +1,6 @@
 import tkinter as Tk
-import sys
 import Logger
+from Defines import STANDARD_RETURN
 
 #Tk.Frameクラスを継承
 class Amount(Tk.Frame):
@@ -9,6 +9,11 @@ class Amount(Tk.Frame):
         self.master = Tk.Tk()
         #Python3ではJavaと違って継承元のコンストラクタを暗黙的に呼び出さないので、明示的に呼び出す必要がある
         super().__init__(self.master)
+
+    # 閉じるボタンが押されたら失敗を返却
+    def __on_closing(self):
+        self.master.destroy()
+        self.result = STANDARD_RETURN.NOT_OK
 
     #OKボタンが押されたときに実行される
     #テキストボックスに入力されたパスワードを変数に保存して閉じる
@@ -52,21 +57,27 @@ class Amount(Tk.Frame):
         self.Button_ok.grid(column=2, row=1,padx=10)
 
     def input(self):
+        self.result = STANDARD_RETURN.OK
         # ウィジェット作成
         self.__create_widgets()
+        #閉じるボタンが押されたときの処理
+        self.master.protocol("WM_DELETE_WINDOW", self.__on_closing)
         #GUIを表示
         self.mainloop()
+        #閉じられていたらFalseを返す
+        if self.result == STANDARD_RETURN.NOT_OK:
+            return self.result,0
         #入力された金額を変数に保存
         amount = self.Amount
         #数値以外と0以下と18桁以上はFalseを返す
         try:
             if float(amount) <= 0 or len(str(amount)) > 18:
-                tb = sys.exc_info()[2]
-                Logger.Logging("message:{0}".format(e.with_traceback(tb)))
-                return False,0
-        except ValueError as e:
-            tb = sys.exc_info()[2]
-            Logger.Logging("message:{0}".format(e.with_traceback(tb)))
-            return False,0
+                self.result = STANDARD_RETURN.NOT_OK
+                Logger.Logging("message:{0}".format("input value of amount is invalid."))
+                return self.result,0
+        except ValueError:
+            self.result = STANDARD_RETURN.NOT_OK
+            Logger.Logging("message:{0}".format("input value of amount is invalid."))
+            return self.result,0
         else:
-            return True,amount
+            return self.result,amount

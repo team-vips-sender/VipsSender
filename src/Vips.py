@@ -82,7 +82,7 @@ class Vips:
             self.amount = Amount()
             is_inputted, amount = self.amount.input()
             
-            if not is_inputted:
+            if is_inputted == STANDARD_RETURN.NOT_OK:
                 ret = STANDARD_RETURN.NOT_OK
             else:
                 for address in addresses:
