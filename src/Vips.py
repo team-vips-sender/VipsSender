@@ -20,10 +20,10 @@ class Vips:
         else:
             result = self.vips_wallet.connect_test()
             if result == STANDARD_RETURN.OK:
-            
                 self.confirm = Confirm()
-                is_permitted = self.confirm.is_sending()
-                if is_permitted:
+                result = self.confirm.is_sending()
+
+                if result == STANDARD_RETURN.OK:
                     result, send_info = self.__compensate_argument(send_info)
                     
                     if result == STANDARD_RETURN.OK:
@@ -52,9 +52,10 @@ class Vips:
     
     def __wallet_unlock(self):
         ret = STANDARD_RETURN.NOT_OK
-        
         self.password = Password()
-        password = self.password.get_password(False)
+        result,password = self.password.get_password(False)
+        if result == STANDARD_RETURN.NOT_OK:
+            return ret,password
         result = self.vips_wallet.unlock(password)
         
         if result == STANDARD_RETURN.OK:
@@ -62,7 +63,9 @@ class Vips:
         else:
             while True:
                 self.password = Password()
-                password = self.password.get_password(True)
+                result,password = self.password.get_password(True)
+                if result == STANDARD_RETURN.NOT_OK:
+                    return ret, password
                 result = self.vips_wallet.unlock(password)
                 if result == STANDARD_RETURN.OK:
                     ret = STANDARD_RETURN.OK
@@ -76,9 +79,9 @@ class Vips:
         addresses = self.__get_address_unspecified_amount(send_info)
         if addresses:
             self.amount = Amount()
-            is_inputted, amount = self.amount.input()
+            result, amount = self.amount.input()
             
-            if not is_inputted:
+            if result == STANDARD_RETURN.NOT_OK:
                 ret = STANDARD_RETURN.NOT_OK
             else:
                 for address in addresses:
