@@ -24,7 +24,6 @@ class Vips:
             result = self.vips_wallet.connect_test()
             if result == STANDARD_RETURN.OK:
                 result = self.confirm.is_sending()
-
                 if result == STANDARD_RETURN.OK:
                     result, send_info = self.__compensate_argument(send_info)
                     
@@ -78,8 +77,7 @@ class Vips:
     
         addresses = self.__get_address_unspecified_amount(send_info)
         if addresses:
-            result, amount = self.amount.input()
-            
+            result, amount = self.amount.input()            
             if result == STANDARD_RETURN.NOT_OK:
                 ret = STANDARD_RETURN.NOT_OK
             else:
