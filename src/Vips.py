@@ -5,7 +5,6 @@ from Amount import Amount
 from Confirm import Confirm
 from Password import Password
 
-
 class Vips:
     def __init__(self):
         self.vips_wallet = VipsWallet()
@@ -15,7 +14,7 @@ class Vips:
 
     def send(self, send_info):
         ret = STANDARD_RETURN.NOT_OK
-    
+        password = ''
         result = self.__check_argment(send_info)
         if result != STANDARD_RETURN.OK:
             Logger.Logging('Argument error : {0}'.format(send_info))
@@ -26,13 +25,11 @@ class Vips:
                 result = self.confirm.is_sending()
                 if result == STANDARD_RETURN.OK:
                     result, send_info = self.__compensate_argument(send_info)
-                    
                     if result == STANDARD_RETURN.OK:
                         result, wallet_lock_status = self.vips_wallet.get_lock_status()
-                        
                         if result == STANDARD_RETURN.OK:
-                            result, password = self.__wallet_unlock()
-                            
+                            if wallet_lock_status != WALLET_LOCK_STATE.UNLOCK:
+                                result, password = self.__wallet_unlock()
                             if result == STANDARD_RETURN.OK:
                                 result = self.vips_wallet.send(send_info)
 
@@ -77,7 +74,8 @@ class Vips:
     
         addresses = self.__get_address_unspecified_amount(send_info)
         if addresses:
-            result, amount = self.amount.input()            
+            result, amount = self.amount.input()
+            
             if result == STANDARD_RETURN.NOT_OK:
                 ret = STANDARD_RETURN.NOT_OK
             else:
