@@ -5,6 +5,7 @@ from Amount import Amount
 from Confirm import Confirm
 from Password import Password
 
+
 class Vips:
     def __init__(self):
         self.vips_wallet = VipsWallet()
