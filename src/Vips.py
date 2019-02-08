@@ -9,6 +9,9 @@ from Password import Password
 class Vips:
     def __init__(self):
         self.vips_wallet = VipsWallet()
+        self.confirm = Confirm()
+        self.password = Password()
+        self.amount = Amount()
 
     def send(self, send_info):
         ret = STANDARD_RETURN.NOT_OK
@@ -20,10 +23,8 @@ class Vips:
         else:
             result = self.vips_wallet.connect_test()
             if result == STANDARD_RETURN.OK:
-            
-                self.confirm = Confirm()
-                is_permitted = self.confirm.is_sending()
-                if is_permitted == STANDARD_RETURN.OK:
+                result = self.confirm.is_sending()
+                if result == STANDARD_RETURN.OK:
                     result, send_info = self.__compensate_argument(send_info)
                     
                     if result == STANDARD_RETURN.OK:
@@ -52,12 +53,8 @@ class Vips:
     
     def __wallet_unlock(self):
         ret = STANDARD_RETURN.NOT_OK
-        
-        self.password = Password()
-        password_results = self.password.get_password(False)
-        password_ret = password_results[0]
-        password = password_results[1]
-        if password_ret == STANDARD_RETURN.NOT_OK:
+        result,password = self.password.get_password(False)
+        if result == STANDARD_RETURN.NOT_OK:
             return ret,password
         result = self.vips_wallet.unlock(password)
         
@@ -65,8 +62,9 @@ class Vips:
             ret = STANDARD_RETURN.OK
         else:
             while True:
-                self.password = Password()
-                password = self.password.get_password(True)
+                result,password = self.password.get_password(True)
+                if result == STANDARD_RETURN.NOT_OK:
+                    return ret, password
                 result = self.vips_wallet.unlock(password)
                 if result == STANDARD_RETURN.OK:
                     ret = STANDARD_RETURN.OK
@@ -79,10 +77,8 @@ class Vips:
     
         addresses = self.__get_address_unspecified_amount(send_info)
         if addresses:
-            self.amount = Amount()
-            is_inputted, amount = self.amount.input()
-            
-            if is_inputted == STANDARD_RETURN.NOT_OK:
+            result, amount = self.amount.input()            
+            if result == STANDARD_RETURN.NOT_OK:
                 ret = STANDARD_RETURN.NOT_OK
             else:
                 for address in addresses:
