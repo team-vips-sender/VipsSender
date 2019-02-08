@@ -78,14 +78,6 @@ class Password(Tk.Frame):
     #それ以外はパスワード入力画面表示し、入力されたパスワードを返す
     #入力されたパスワードが正しいかどうかはここではチェックしない
     def get_password(self, is_force_input):
-        #tkinterのインスタンスでありメインウィンドウ
-        self.master = Tk.Tk()
-        #BookeanVar()はTrueかFalseの2択の特殊な変数の型
-        #パスワードを記憶するかどうかのチェックボックス用
-        self.IsRememberPassword = Tk.BooleanVar()
-        #Python3ではJavaと違って継承元のコンストラクタを暗黙的に呼び出さないので、明示的に呼び出す必要がある
-        super().__init__(self.master)
-
         password = ''
         # パスワード入力を強制しない場合は記憶済パスワードを探す
         if is_force_input == False:
@@ -104,6 +96,14 @@ class Password(Tk.Frame):
             # 読み出しできなければパスワード入力させる
             else:
                 pass
+        #tkinterのインスタンスでありメインウィンドウ
+        self.master = Tk.Tk()
+        #BookeanVar()はTrueかFalseの2択の特殊な変数の型
+        #パスワードを記憶するかどうかのチェックボックス用
+        self.IsRememberPassword = Tk.BooleanVar()
+        #Python3ではJavaと違って継承元のコンストラクタを暗黙的に呼び出さないので、明示的に呼び出す必要がある
+        super().__init__(self.master)
+
         # ウィジェット作成
         self.__create_widgets()
         #閉じるボタンが押されたときの処理
