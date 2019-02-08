@@ -7,19 +7,11 @@ from Defines import EXTERNAL_FILE
 #Tk.Frameクラスを継承
 class Password(Tk.Frame):
     def __init__(self):
-        #tkinterのインスタンスでありメインウィンドウ
-        self.master = Tk.Tk()
-        #BookeanVar()はTrueかFalseの2択の特殊な変数の型
-        #パスワードを記憶するかどうかのチェックボックス用
-        self.IsRememberPassword = Tk.BooleanVar()
-        #Python3ではJavaと違って継承元のコンストラクタを暗黙的に呼び出さないので、明示的に呼び出す必要がある
-        super().__init__(self.master)
-
+        pass
     #tkinterではGUIの部品のことをウィジェットという
     #ウィジェットを作成するプライベート関数
     #パスワード入力画面を表示する
     def __create_widgets(self):
-
         #ウィンドウの幅
         width = 400
         #ウィンドウの高さ
@@ -104,6 +96,14 @@ class Password(Tk.Frame):
             # 読み出しできなければパスワード入力させる
             else:
                 pass
+        #tkinterのインスタンスでありメインウィンドウ
+        self.master = Tk.Tk()
+        #BookeanVar()はTrueかFalseの2択の特殊な変数の型
+        #パスワードを記憶するかどうかのチェックボックス用
+        self.IsRememberPassword = Tk.BooleanVar()
+        #Python3ではJavaと違って継承元のコンストラクタを暗黙的に呼び出さないので、明示的に呼び出す必要がある
+        super().__init__(self.master)
+
         # ウィジェット作成
         self.__create_widgets()
         #閉じるボタンが押されたときの処理

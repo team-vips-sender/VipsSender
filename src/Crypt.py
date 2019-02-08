@@ -34,6 +34,6 @@ def Encrypt(str):
 def Decrypt(crypted_str,key):
     #オブジェクトは使いまわしできないので再度作成
     aes = AES.new(key, AES.MODE_CBC, iv)
-    #復号　元々utf-8でencodeされているのでこちらもdecodeする
-    data = aes.decrypt(crypted_str).decode('utf-8')
+    #復号　パディングの戻し　元々utf-8でencodeされているのでこちらもdecodeする
+    data = aes.decrypt(crypted_str).rstrip().decode('utf-8')
     return data
