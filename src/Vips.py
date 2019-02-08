@@ -9,6 +9,9 @@ from Password import Password
 class Vips:
     def __init__(self):
         self.vips_wallet = VipsWallet()
+        self.confirm = Confirm()
+        self.password = Password()
+        self.amount = Amount()
 
     def send(self, send_info):
         ret = STANDARD_RETURN.NOT_OK
@@ -20,7 +23,6 @@ class Vips:
         else:
             result = self.vips_wallet.connect_test()
             if result == STANDARD_RETURN.OK:
-                self.confirm = Confirm()
                 result = self.confirm.is_sending()
 
                 if result == STANDARD_RETURN.OK:
@@ -52,7 +54,6 @@ class Vips:
     
     def __wallet_unlock(self):
         ret = STANDARD_RETURN.NOT_OK
-        self.password = Password()
         result,password = self.password.get_password(False)
         if result == STANDARD_RETURN.NOT_OK:
             return ret,password
@@ -62,7 +63,6 @@ class Vips:
             ret = STANDARD_RETURN.OK
         else:
             while True:
-                self.password = Password()
                 result,password = self.password.get_password(True)
                 if result == STANDARD_RETURN.NOT_OK:
                     return ret, password
@@ -78,7 +78,6 @@ class Vips:
     
         addresses = self.__get_address_unspecified_amount(send_info)
         if addresses:
-            self.amount = Amount()
             result, amount = self.amount.input()
             
             if result == STANDARD_RETURN.NOT_OK:
