@@ -5,10 +5,7 @@ from Defines import STANDARD_RETURN
 #Tk.Frameクラスを継承
 class Amount(Tk.Frame):
     def __init__(self):
-        #tkinterのインスタンスでありメインウィンドウ
-        self.master = Tk.Tk()
-        #Python3ではJavaと違って継承元のコンストラクタを暗黙的に呼び出さないので、明示的に呼び出す必要がある
-        super().__init__(self.master)
+        pass
 
     # 閉じるボタンが押されたら失敗を返却
     def __on_closing(self):
@@ -57,6 +54,11 @@ class Amount(Tk.Frame):
         self.Button_ok.grid(column=2, row=1,padx=10)
 
     def input(self):
+        #tkinterのインスタンスでありメインウィンドウ
+        self.master = Tk.Tk()
+        #Python3ではJavaと違って継承元のコンストラクタを暗黙的に呼び出さないので、明示的に呼び出す必要がある
+        super().__init__(self.master)
+
         self.result = STANDARD_RETURN.OK
         # ウィジェット作成
         self.__create_widgets()
