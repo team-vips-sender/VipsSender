@@ -15,7 +15,6 @@ class Vips:
 
     def send(self, send_info):
         ret = STANDARD_RETURN.NOT_OK
-        password = ''
         result = self.__check_argment(send_info)
         if result != STANDARD_RETURN.OK:
             Logger.Logging('Argument error : {0}'.format(send_info))
@@ -27,26 +26,34 @@ class Vips:
                 if result == STANDARD_RETURN.OK:
                     result, send_info = self.__compensate_argument(send_info)
                     if result == STANDARD_RETURN.OK:
-                        result, wallet_lock_status = self.vips_wallet.get_lock_status()
-                        if result == STANDARD_RETURN.OK:
-                            if wallet_lock_status != WALLET_LOCK_STATE.UNLOCK:
-                                result, password = self.__wallet_unlock()
-                            if result == STANDARD_RETURN.OK:
-                                result = self.vips_wallet.send(send_info)
-
-                                # Confirmation of lock result is not necessary.
-                                # Reason:
-                                #   A conditional of lock fail is follow:
-                                #     (1) Password is inconsistent
-                                #     (2) Wallet was not encrypted and requested for LOCK or STAKING_ONLY
-                                #     (3) Other (e.g. wallet is not execution)
-                                #   (1) and (2) is improbable in logic of this function.
-                                #   If (3) occured, can not do anything.
-                                self.vips_wallet.lock(wallet_lock_status, password)
-                                
-                                if result == STANDARD_RETURN.OK:
-                                    ret = STANDARD_RETURN.OK
+                        ret = self.__send_process(send_info)
     
+        return ret
+    
+    def __send_process(self, send_info):
+        ret = STANDARD_RETURN.NOT_OK
+        password = ''
+        
+        result, wallet_lock_status = self.vips_wallet.get_lock_status()
+        if result == STANDARD_RETURN.OK:
+            if wallet_lock_status != WALLET_LOCK_STATE.UNLOCK:
+                result, password = self.__wallet_unlock()
+            if result == STANDARD_RETURN.OK:
+                result = self.vips_wallet.send(send_info)
+
+                # Confirmation of lock result is not necessary.
+                # Reason:
+                #   A conditional of lock fail is follow:
+                #     (1) Password is inconsistent
+                #     (2) Wallet was not encrypted and requested for LOCK or STAKING_ONLY
+                #     (3) Other (e.g. wallet is not execution)
+                #   (1) and (2) is improbable in logic of this function.
+                #   If (3) occured, can not do anything.
+                self.vips_wallet.lock(wallet_lock_status, password)
+                
+                if result == STANDARD_RETURN.OK:
+                    ret = STANDARD_RETURN.OK
+                    
         return ret
     
     def __wallet_unlock(self):
