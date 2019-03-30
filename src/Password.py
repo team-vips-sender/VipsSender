@@ -1,5 +1,6 @@
 import Crypt
 import tkinter as Tk
+import tkinter.ttk as Ttk
 import ExternalFile
 from Defines import STANDARD_RETURN
 from Defines import EXTERNAL_FILE
@@ -12,39 +13,44 @@ class Password(Tk.Frame):
     #ウィジェットを作成するプライベート関数
     #パスワード入力画面を表示する
     def __create_widgets(self):
-        #ウィンドウの幅
-        width = 400
-        #ウィンドウの高さ
-        height = 130
-        #x座標をスクリーンの長さの半分 - ウィンドウの幅の半分に設定
-        x = (self.master.winfo_screenwidth() // 2) - (width // 2)
-        #y座標をスクリーンの長さの半分 - ウィンドウの高さの半分に設定
-        y = (self.master.winfo_screenheight() // 2) - (height // 2)
-        self.master.geometry('{}x{}+{}+{}'.format(width,height, x, y))
+        self.master.geometry()
 
         #pack()：ウィジェットをウィンドウに配置する
         #padx：横幅　pady：縦幅
-        self.pack(padx=20, pady=20)
+        self.pack(padx=5, pady=5)
         #resizable：サイズ変更の許可
         #横,縦の順番で、0は禁止、１は許可
         self.master.resizable(0, 0)
         self.master.title('パスワード入力画面')
 
-        self.label_1 = Tk.Label(self,text='ウォレットのロックを解除するパスワードを入力してください。')
-        #Enty：1行入力のテキストボックス 第1引数は配置するFrameオブジェクト　show='*'で伏字になる
-        self.Entry_password = Tk.Entry(self, show='*',width= 30,font=8,relief='sunken',bd=3)
-        #OKボタン　押されたらプライベート関数__pressed_okを実行する
-        self.Button_ok = Tk.Button(self, text='OK', command=self.__pressed_ok,font=8,bd=3)
-        #パスワードを記憶するかどうかのチェックボックス　onでTrue offでFalse
-        self.CheckButton_RememberPassword = Tk.Checkbutton(self, text=u'パスワードを記憶', variable=self.IsRememberPassword)
+        # ボタンのスタイルを変更
+        style = Ttk.Style()
+        style.configure('TButton', font=('Meiryo UI', 8))
 
-        #grid()：テキストボックスをグリッド状に配置
-        #上の４つのウィジェットをそれぞれ配置していく
-        #ラベルは1行1列目　テキストボックスは2行1列目　OKボタンは2行2列目　チェックボックスは3行1列目
-        self.label_1.grid(column=0,row=0)
-        self.Entry_password.grid(column=0, row=1,pady=10)
-        self.Button_ok.grid(column=1, row=1,padx=10)
-        self.CheckButton_RememberPassword.grid(column=0, row=2)
+        #フレームの作成
+        text_frame = Ttk.Frame(self)
+        text_frame.grid(column=0, row=0, sticky='w')
+        input_frame = Ttk.Frame(self)
+        input_frame.grid(column=0, row=1, sticky='we')
+        remember_frame = Ttk.Frame(self)
+        remember_frame.grid(column=0, row=2, sticky='w')
+        
+        self.label_1 = Ttk.Label(text_frame, text='ウォレットのロックを解除するパスワードを入力してください。', font=("Meiryo UI", 11))
+        self.label_1.pack(side='left', anchor='w')
+        
+        #Enty：1行入力のテキストボックス 第1引数は配置するFrameオブジェクト　show='*'で伏字になる
+        self.Entry_password = Ttk.Entry(input_frame, show='*', font=("Meiryo UI", 8))
+        self.Entry_password.pack(side='left', padx=5, expand=1, fill='x')
+        self.Entry_password.focus_set()
+        self.Entry_password.bind('<Return>', self.__pressed_ok)
+        
+        #OKボタン　押されたらプライベート関数__pressed_okを実行する
+        self.Button_ok = Ttk.Button(input_frame, text='OK', command=self.__pressed_ok, width=7)
+        self.Button_ok.pack(side='left')
+
+        #パスワードを記憶するかどうかのチェックボックス　onでTrue offでFalse
+        self.CheckButton_RememberPassword = Ttk.Checkbutton(remember_frame, text=u'パスワードを記憶', variable=self.IsRememberPassword)
+        self.CheckButton_RememberPassword.pack(side='left')
 
     # 閉じるボタンが押されたら失敗を返却
     def __on_closing(self):
@@ -53,7 +59,7 @@ class Password(Tk.Frame):
 
     #OKボタンが押されたときに実行される
     #テキストボックスに入力されたパスワードを変数に保存して閉じる
-    def __pressed_ok(self):
+    def __pressed_ok(self, event=None):
         self.Password = self.Entry_password.get()
         self.master.destroy()
         self.result = STANDARD_RETURN.OK

@@ -1,4 +1,5 @@
 import tkinter as Tk
+import tkinter.ttk as Ttk
 import Logger
 from Defines import STANDARD_RETURN
 
@@ -14,44 +15,46 @@ class Amount(Tk.Frame):
 
     #OKボタンが押されたときに実行される
     #テキストボックスに入力されたパスワードを変数に保存して閉じる
-    def __pressed_ok(self):
+    def __pressed_ok(self, event=None):
         self.Amount = self.Entry_amount.get()
         self.master.destroy()
 
     def __create_widgets(self):
-
-        #ウィンドウの幅
-        width = 350
-        #ウィンドウの高さ
-        height = 130
-        #x座標をスクリーンの長さの半分 - ウィンドウの幅の半分に設定
-        x = (self.master.winfo_screenwidth() // 2) - (width // 2)
-        #y座標をスクリーンの長さの半分 - ウィンドウの高さの半分に設定
-        y = (self.master.winfo_screenheight() // 2) - (height // 2)
-        self.master.geometry('{}x{}+{}+{}'.format(width,height, x, y))
+        self.master.geometry()
 
         #pack()：ウィジェットをウィンドウに配置する
         #padx：横幅　pady：縦幅
-        self.pack(padx=20, pady=20)
+        self.pack(padx=5, pady=5)
         #resizable：サイズ変更の許可
         #横,縦の順番で、0は禁止、１は許可
         self.master.resizable(0, 0)
         self.master.title('送金額入力画面')
 
-        self.label_1 = Tk.Label(self,text=u'送金額を入力してください。')
-        #Enty：1行入力のテキストボックス 第1引数は配置するFrameオブジェクト
-        self.Entry_amount = Tk.Entry(self, width= 20,font=8,relief='sunken',bd=3,justify='right')
-        self.label_2 = Tk.Label(self,text=u'VIPS',font=4)
-        #OKボタン　押されたらプライベート関数__pressed_okを実行する
-        self.Button_ok = Tk.Button(self, text='OK', command=self.__pressed_ok,font=8,bd=3)
+        # ボタンのスタイルを変更
+        style = Ttk.Style()
+        style.configure('TButton', font=('Meiryo UI', 8))
 
-        #grid()：テキストボックスをグリッド状に配置
-        #上の４つのウィジェットをそれぞれ配置していく
-        #ラベル1は1行1列目　テキストボックスは2行1列目　ラベル2は2行2列目　OKボタンは2行3列目
-        self.label_1.grid(column=0,row=0)
-        self.Entry_amount.grid(column=0, row=1,pady=10)
-        self.label_2.grid(column=1, row=1)
-        self.Button_ok.grid(column=2, row=1,padx=10)
+        #フレームの作成
+        text_frame = Ttk.Frame(self)
+        text_frame.grid(column=0, row=0, sticky='w')
+        input_frame = Ttk.Frame(self)
+        input_frame.grid(column=0, row=1, sticky='w')
+
+        self.label_1 = Tk.Label(text_frame, text=u'送金額を入力してください。', font=("Meiryo UI", 11))
+        self.label_1.pack(side='left', anchor='w')
+
+        #Enty：1行入力のテキストボックス 第1引数は配置するFrameオブジェクト
+        self.Entry_amount = Tk.Entry(input_frame, justify='right', font=("Meiryo UI", 8))
+        self.Entry_amount.pack(side='left', padx=5, expand=1, fill='x')
+        self.Entry_amount.focus_set()
+        self.Entry_amount.bind('<Return>', self.__pressed_ok)
+
+        self.label_2 = Tk.Label(input_frame, text=u'VIPS', width=5, font=("Meiryo UI", 8), anchor="w")
+        self.label_2.pack(side='left')
+
+        #OKボタン　押されたらプライベート関数__pressed_okを実行する
+        self.Button_ok = Tk.Button(input_frame, text='OK', command=self.__pressed_ok, width=7)
+        self.Button_ok.pack(side='left')
 
     def input(self):
         #tkinterのインスタンスでありメインウィンドウ

@@ -1,4 +1,5 @@
 import tkinter as Tk
+import tkinter.ttk as Ttk
 import ExternalFile
 from Defines import STANDARD_RETURN
 from Defines import EXTERNAL_FILE
@@ -12,39 +13,40 @@ class Confirm(Tk.Frame):
     #ウィジェットを作成するプライベート関数
     #パスワード入力画面を表示する
     def __create_widgets(self):
-        #ウィンドウの幅
-        width = 400
-        #ウィンドウの高さ
-        height = 150
-        #x座標をスクリーンの長さの半分 - ウィンドウの幅の半分に設定
-        x = (self.master.winfo_screenwidth() // 2) - (width // 2)
-        #y座標をスクリーンの長さの半分 - ウィンドウの高さの半分に設定
-        y = (self.master.winfo_screenheight() // 2) - (height // 2)
-        self.master.geometry('{}x{}+{}+{}'.format(width,height, x, y))
+        self.master.geometry()
 
         #pack()：ウィジェットをウィンドウに配置する
-        #padx：横幅　pady：縦幅jjj
-        self.pack(padx=20, pady=20)
+        #padx：横幅　pady：縦幅
+        self.pack(padx=5, pady=5)
         #resizable：サイズ変更の許可
         #横,縦の順番で、0は禁止、１は許可
         self.master.resizable(0, 0)
         self.master.title('送金確認画面')
 
-        self.label_1 = Tk.Label(self,text='送金します。よろしいですか？',font=8)
-        #OKボタン　押されたらプライベート関数__pressed_okを実行する
-        self.Button_ok = Tk.Button(self, text='OK', command=self.__pressed_ok,bd=3,font=4,width=5)
-        #キャンセルボタン　押されたらプライベート関数__pressed_cancelを実行する
-        self.Button_cancel = Tk.Button(self, text='キャンセル', command=self.__pressed_cancel,bd=3,font=4,width=10)
-        #次回以降確認画面を出すかどうかのチェックボックス　onでTrue offでFalse
-        self.CheckButton_isConfirm = Tk.Checkbutton(self, text=u'今後、このメッセージを表示しない', variable=self.IsConfirm)
+        # ボタンのスタイルを変更
+        style = Ttk.Style()
+        style.configure('TButton', font=('Meiryo UI', 8))
 
-        #grid()：テキストボックスをグリッド状に配置
-        #上の４つのウィジェットをそれぞれ配置していく
-        #ラベルは1行1列目　テキストボックスは2行1列目　OKボタンは2行2列目　チェックボックスは3行1列目
-        self.label_1.grid(column=0,row=0)
-        self.Button_ok.grid(column=0, row=1,padx=10,pady=10)
-        self.Button_cancel.grid(column=1, row=1,padx=10,pady=10)
-        self.CheckButton_isConfirm.grid(column=0, row=2)
+        #フレームの作成
+        main_frame = Ttk.Frame(self)
+        main_frame.grid(column=0, row=0, sticky='w')
+        redisplay_frame = Ttk.Frame(self)
+        redisplay_frame.grid(column=0, row=1, sticky='w')
+
+        self.label_1 = Ttk.Label(main_frame, text='送金します。よろしいですか？', font=("Meiryo UI", 11), width=25)
+        self.label_1.pack(side='left', anchor='n')
+        
+        #OKボタン　押されたらプライベート関数__pressed_okを実行する
+        self.Button_ok = Ttk.Button(main_frame, text='OK', command=self.__pressed_ok, width=7)
+        self.Button_ok.pack(side='top')
+
+        #キャンセルボタン　押されたらプライベート関数__pressed_cancelを実行する
+        self.Button_cancel = Ttk.Button(main_frame, text='キャンセル', command=self.__pressed_cancel, width=7)
+        self.Button_cancel.pack(side='top')
+
+        #次回以降確認画面を出すかどうかのチェックボックス　onでTrue offでFalse
+        self.CheckButton_isConfirm = Ttk.Checkbutton(redisplay_frame, text='今後、このメッセージを表示しない', variable=self.IsConfirm)
+        self.CheckButton_isConfirm.pack(side='left')
 
     # 閉じるボタンが押されたら失敗を返却
     def __on_closing(self):
