@@ -4,6 +4,7 @@
 class STANDARD_RETURN:
     OK = 0
     NOT_OK = 1
+    FATAL_ERROR = 2
 
 class WALLET_LOCK_STATE:
     UNLOCK = 0
@@ -11,4 +12,4 @@ class WALLET_LOCK_STATE:
     LOCK = 2
 
 class EXTERNAL_FILE:
-    PATH = 'data.ini'
+    PATH = '/VipsSender/data.ini'
