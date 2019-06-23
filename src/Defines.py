@@ -12,4 +12,4 @@ class WALLET_LOCK_STATE:
     LOCK = 2
 
 class EXTERNAL_FILE:
-    PATH = 'data.ini'
+    PATH = '/VipsSender/data.ini'

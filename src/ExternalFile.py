@@ -1,5 +1,6 @@
 import configparser
 from Defines import STANDARD_RETURN
+import os
 
 
 class ExternalFile:
@@ -9,6 +10,10 @@ class ExternalFile:
 
         self.config = configparser.ConfigParser()
         self.config.read(file_path)
+
+        dir_path = os.path.dirname(file_path)
+        if not os.path.exists(dir_path):
+            os.mkdir(dir_path)
 
         if not self.__kind in self.config:
             self.config[self.__kind] = {}

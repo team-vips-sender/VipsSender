@@ -4,6 +4,7 @@ import tkinter.ttk as Ttk
 import ExternalFile
 from Defines import STANDARD_RETURN
 from Defines import EXTERNAL_FILE
+import OsDepend
 
 #Tk.Frameクラスを継承
 class Password(Tk.Frame):
@@ -76,9 +77,11 @@ class Password(Tk.Frame):
         crypted_str = crypted_str.hex()
         key = key.hex()
 
-        self.external_file = ExternalFile.ExternalFile(EXTERNAL_FILE.PATH)
-        self.external_file.save('password', crypted_str)
-        self.external_file.save('secret_key', key)
+        ret, user_path = OsDepend.get_user_path()
+        if ret == STANDARD_RETURN.OK:
+            self.external_file = ExternalFile.ExternalFile(user_path + EXTERNAL_FILE.PATH)
+            self.external_file.save('password', crypted_str)
+            self.external_file.save('secret_key', key)
 
     #is_force_inputがFalseかつ記憶済のパスワードがあれば、記憶済のパスワードを返す
     #それ以外はパスワード入力画面表示し、入力されたパスワードを返す
@@ -87,8 +90,12 @@ class Password(Tk.Frame):
         password = ''
         # パスワード入力を強制しない場合は記憶済パスワードを探す
         if is_force_input == False:
+            ret, user_path = OsDepend.get_user_path()
+            if ret != STANDARD_RETURN.OK:
+                return STANDARD_RETURN.NOT_OK, ''
+
             # 記憶した暗号化済みパスワードと秘密鍵を読み出し、複合して返す
-            self.external_file = ExternalFile.ExternalFile(EXTERNAL_FILE.PATH)
+            self.external_file = ExternalFile.ExternalFile(user_path + EXTERNAL_FILE.PATH)
             result_pass = self.external_file.get('password')
             result_key = self.external_file.get('secret_key')
             if result_pass[0] == 0 and result_key[0] == 0:

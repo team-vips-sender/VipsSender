@@ -1,7 +1,7 @@
 import requests
 import json
-import os
-import platform
+import OsDepend
+from Defines import STANDARD_RETURN
 
 
 class RpcClient:
@@ -37,21 +37,17 @@ class RpcClient:
         username = None
         password = None
 
-        os_name = platform.system()
-        if os_name == 'Windows':
-            source = os.path.expanduser('~/AppData/Roaming/{0}/{0}.conf').format(_dir)
-        elif os_name == 'MacOS':
-            source = os.path.expanduser('~/{0}/{0}.conf').format(_dir)
-        else:
-            print("error")
+        ret, user_path = OsDepend.get_user_path()
+        if ret == STANDARD_RETURN.OK:
+            source = user_path + '/{0}/{0}.conf'.format(_dir)
 
-        dest = open(source, 'r')
-        with dest as conf:
-            for line in conf:
-                if line.startswith('rpcuser'):
-                    username = line.split("=")[1].strip()
-                if line.startswith("rpcpassword"):
-                    password = line.split("=")[1].strip()
+            dest = open(source, 'r')
+            with dest as conf:
+                for line in conf:
+                    if line.startswith('rpcuser'):
+                        username = line.split("=")[1].strip()
+                    if line.startswith("rpcpassword"):
+                        password = line.split("=")[1].strip()
 
         return username, password
 

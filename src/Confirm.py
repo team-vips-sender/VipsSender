@@ -3,6 +3,7 @@ import tkinter.ttk as Ttk
 import ExternalFile
 from Defines import STANDARD_RETURN
 from Defines import EXTERNAL_FILE
+import OsDepend
 
 #Tk.Frameクラスを継承
 class Confirm(Tk.Frame):
@@ -73,8 +74,12 @@ class Confirm(Tk.Frame):
         self.external_file.save('isconfirmflag', 'False')
 
     def is_sending(self):
+        ret, user_path = OsDepend.get_user_path()
+        if ret != STANDARD_RETURN.OK:
+            return STANDARD_RETURN.NOT_OK
+
         #インスタンスを作成すると自動的にファイルが作られる
-        self.external_file = ExternalFile.ExternalFile(EXTERNAL_FILE.PATH)
+        self.external_file = ExternalFile.ExternalFile(user_path + EXTERNAL_FILE.PATH)
         # 次回以降確認しない情報が読み出せればTrueを返却して終了
         result = self.external_file.get('isconfirmflag')
         if result[0] == 0 and result[1] == 'False':
