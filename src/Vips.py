@@ -107,5 +107,15 @@ class Vips:
         return addresses
     
     def __check_argment(self, send_info):
-        # Todo: add check logic.
-        return STANDARD_RETURN.OK
+        ret = STANDARD_RETURN.OK
+        
+        # Amount check
+        try:
+            for amount_str in send_info.values():
+                float(amount_str)
+        except ValueError as e:
+            ret = STANDARD_RETURN.NOT_OK
+        
+        # Address will check at VipsWallet.py
+        
+        return ret
