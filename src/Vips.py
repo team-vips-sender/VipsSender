@@ -1,5 +1,6 @@
 from Defines import STANDARD_RETURN, WALLET_LOCK_STATE
 import Logger
+import Message
 from VipsWallet import VipsWallet
 from Amount import Amount
 from Confirm import Confirm
@@ -16,6 +17,8 @@ class Vips:
     def send(self, send_info):
         ret = STANDARD_RETURN.NOT_OK
         result = self.__check_argment(send_info)
+        error_message = '[Error]\n送金に失敗しました。'
+        
         if result != STANDARD_RETURN.OK:
             Logger.Logging('Argument error : {0}'.format(send_info))
         
@@ -27,7 +30,12 @@ class Vips:
                     result, send_info = self.__compensate_argument(send_info)
                     if result == STANDARD_RETURN.OK:
                         ret = self.__send_process(send_info)
+            else:
+                error_message += '\nウォレットが起動していないか、VIPSTARCOIN.confの設定が正しくない可能性があります。'
     
+        if ret != STANDARD_RETURN.OK:
+            Message.display(error_message)
+
         return ret
     
     def __send_process(self, send_info):
@@ -41,16 +49,10 @@ class Vips:
             if result == STANDARD_RETURN.OK:
                 result = self.vips_wallet.send(send_info)
 
-                # Confirmation of lock result is not necessary.
-                # Reason:
-                #   A conditional of lock fail is follow:
-                #     (1) Password is inconsistent
-                #     (2) Wallet was not encrypted and requested for LOCK or STAKING_ONLY
-                #     (3) Other (e.g. wallet is not execution)
-                #   (1) and (2) is improbable in logic of this function.
-                #   If (3) occured, can not do anything.
-                self.vips_wallet.lock(wallet_lock_status, password)
-                
+                lock_result = self.vips_wallet.lock(wallet_lock_status, password)
+                if lock_result != STANDARD_RETURN.OK:
+                    Message.display('[Warning]\nウォレットのロックが解除されました。\nロック状態を確認し、必要に応じてロックをかけてください。')
+
                 if result == STANDARD_RETURN.OK:
                     ret = STANDARD_RETURN.OK
                     
@@ -60,12 +62,12 @@ class Vips:
         ret = STANDARD_RETURN.NOT_OK
         result,password = self.password.get_password(False)
         if result == STANDARD_RETURN.NOT_OK:
-            return ret,password
+            return ret, password
         result = self.vips_wallet.unlock(password)
         
         if result == STANDARD_RETURN.OK:
             ret = STANDARD_RETURN.OK
-        else:
+        elif result == STANDARD_RETURN.NOT_OK:
             while True:
                 result,password = self.password.get_password(True)
                 if result == STANDARD_RETURN.NOT_OK:
@@ -74,6 +76,10 @@ class Vips:
                 if result == STANDARD_RETURN.OK:
                     ret = STANDARD_RETURN.OK
                     break
+                elif result == STANDARD_RETURN.FATAL_ERROR:
+                    break
+        else: # If result equals FATAL_ERROR
+            pass
         
         return ret, password
     
