@@ -75,8 +75,8 @@ class VipsWallet:
             if ret == STANDARD_RETURN.OK:
                 total_amount = 0
                 for amount in send_info.values():
-                    total_amount += int(amount)
-                if int(balance) < total_amount:
+                    total_amount += float(amount)
+                if float(balance) < total_amount:
                     Logger.Logging('VipsWallet-send : ' + 'Total amount is over balance.')
                     ret = STANDARD_RETURN.NOT_OK
 
