@@ -2,6 +2,9 @@ import tkinter as Tk
 import tkinter.ttk as Ttk
 from Defines import STANDARD_RETURN
 from Defines import EXTERNAL_FILE
+import os
+
+base = os.path.dirname(os.path.abspath(__file__))
 
 #Tk.Frameクラスを継承
 class MessageWindow(Tk.Frame):
@@ -36,6 +39,7 @@ class MessageWindow(Tk.Frame):
         self.Button_ok = Ttk.Button(input_frame, text='OK', command=self.__on_closing, width=7)
         self.Button_ok.pack(side='top')
 
+
     def __on_closing(self):
         self.master.destroy()
 
@@ -49,6 +53,10 @@ class MessageWindow(Tk.Frame):
         self.__create_widgets(message)
         # 前面に配置
         self.master.attributes("-topmost", True)
+        # アイコンをVIPSのロゴに変更
+        iconfile = base + '/vipstarcoin.ico'
+        self.master.iconbitmap(default=iconfile)
+
         #閉じるボタンが押されたときの処理
         self.master.protocol("WM_DELETE_WINDOW", self.__on_closing)
         #GUIを表示
