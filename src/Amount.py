@@ -65,6 +65,8 @@ class Amount(Tk.Frame):
         self.result = STANDARD_RETURN.OK
         # ウィジェット作成
         self.__create_widgets()
+        # 前面に配置
+        self.master.attributes("-topmost", True)
         #閉じるボタンが押されたときの処理
         self.master.protocol("WM_DELETE_WINDOW", self.__on_closing)
         #GUIを表示
