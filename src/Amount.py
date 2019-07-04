@@ -49,7 +49,7 @@ class Amount(Tk.Frame):
         #Enty：1行入力のテキストボックス 第1引数は配置するFrameオブジェクト
         self.Entry_amount = Tk.Entry(input_frame, justify='right', font=("Meiryo UI", 8))
         self.Entry_amount.pack(side='left', padx=5, expand=1, fill='x')
-        self.Entry_amount.focus_set()
+        self.Entry_amount.focus_force()
         self.Entry_amount.bind('<Return>', self.__pressed_ok)
 
         self.label_2 = Tk.Label(input_frame, text=u'VIPS', width=5, font=("Meiryo UI", 8), anchor="w")

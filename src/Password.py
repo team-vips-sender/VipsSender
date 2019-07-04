@@ -45,7 +45,7 @@ class Password(Tk.Frame):
         #Enty：1行入力のテキストボックス 第1引数は配置するFrameオブジェクト　show='*'で伏字になる
         self.Entry_password = Ttk.Entry(input_frame, show='*', font=("Meiryo UI", 8))
         self.Entry_password.pack(side='left', padx=5, expand=1, fill='x')
-        self.Entry_password.focus_set()
+        self.Entry_password.focus_force()
         self.Entry_password.bind('<Return>', self.__pressed_ok)
         
         #OKボタン　押されたらプライベート関数__pressed_okを実行する

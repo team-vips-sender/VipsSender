@@ -56,7 +56,7 @@ class MessageWindow(Tk.Frame):
         # アイコンをVIPSのロゴに変更
         iconfile = base + '/vipstarcoin.ico'
         self.master.iconbitmap(default=iconfile)
-        self.Button_ok.focus_set()
+        self.Button_ok.focus_force()
         #閉じるボタンが押されたときの処理
         self.master.protocol("WM_DELETE_WINDOW", self.__on_closing)
         #GUIを表示
