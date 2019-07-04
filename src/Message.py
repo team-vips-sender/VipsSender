@@ -38,9 +38,9 @@ class MessageWindow(Tk.Frame):
         #OKボタン 押されたらプライベート関数__on_closingを実行する
         self.Button_ok = Ttk.Button(input_frame, text='OK', command=self.__on_closing, width=7)
         self.Button_ok.pack(side='top')
+        self.Button_ok.bind('<Return>', self.__on_closing)
 
-
-    def __on_closing(self):
+    def __on_closing(self,event=None):
         self.master.destroy()
 
     def display(self, message):
@@ -56,7 +56,7 @@ class MessageWindow(Tk.Frame):
         # アイコンをVIPSのロゴに変更
         iconfile = base + '/vipstarcoin.ico'
         self.master.iconbitmap(default=iconfile)
-
+        self.Button_ok.focus_set()
         #閉じるボタンが押されたときの処理
         self.master.protocol("WM_DELETE_WINDOW", self.__on_closing)
         #GUIを表示

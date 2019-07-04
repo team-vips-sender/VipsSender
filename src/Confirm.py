@@ -43,6 +43,7 @@ class Confirm(Tk.Frame):
         #OKボタン　押されたらプライベート関数__pressed_okを実行する
         self.Button_ok = Ttk.Button(main_frame, text='OK', command=self.__pressed_ok, width=7)
         self.Button_ok.pack(side='top')
+        self.Button_ok.bind('<Return>', self.__pressed_ok)
 
         #キャンセルボタン　押されたらプライベート関数__pressed_cancelを実行する
         self.Button_cancel = Ttk.Button(main_frame, text='キャンセル', command=self.__pressed_cancel, width=7)
@@ -60,7 +61,7 @@ class Confirm(Tk.Frame):
     #OKボタンが押されたときに実行される
     #成功を返却して閉じる
     # 「今後、このメッセージを表示しない」にチェックしていれば記憶
-    def __pressed_ok(self):
+    def __pressed_ok(self,event=None):
         if self.IsConfirm.get():
             self.save()
         self.master.destroy()
@@ -106,6 +107,7 @@ class Confirm(Tk.Frame):
         # アイコンをVIPSのロゴに変更
         iconfile = base + '/vipstarcoin.ico'
         self.master.iconbitmap(default=iconfile)
+        self.Button_ok.focus_set()
         #閉じるボタンが押されたときの処理
         self.master.protocol("WM_DELETE_WINDOW", self.__on_closing)
         #GUIを表示
