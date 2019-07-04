@@ -47,6 +47,8 @@ class MessageWindow(Tk.Frame):
 
         # ウィジェット作成
         self.__create_widgets(message)
+        # 前面に配置
+        self.master.attributes("-topmost", True)
         #閉じるボタンが押されたときの処理
         self.master.protocol("WM_DELETE_WINDOW", self.__on_closing)
         #GUIを表示
