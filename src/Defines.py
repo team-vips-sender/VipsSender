@@ -13,3 +13,6 @@ class WALLET_LOCK_STATE:
 
 class EXTERNAL_FILE:
     PATH = '/VipsSender/data.ini'
+
+class ICON:
+    VIPSTARCOIN = './vipstarcoin.ico'
