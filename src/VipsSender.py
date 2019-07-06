@@ -21,10 +21,11 @@ if __name__ == '__main__':
     args = sys.argv
     ret = STANDARD_RETURN.NOT_OK
     
-    if len(args) != 2:
+    if len(args) < 2:
         Logger.Logging('VipsSender : Wrong argument num : {0}'.format(len(args)))
     else:
-        send_info = __convert_send_info_to_dict(args[1])
+        arg_str = "".join(args[1:])
+        send_info = __convert_send_info_to_dict("".join(arg_str.split()))
     
         if send_info:
             vips = Vips()
