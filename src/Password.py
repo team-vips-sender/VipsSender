@@ -2,9 +2,10 @@ import Crypt
 import tkinter as Tk
 import tkinter.ttk as Ttk
 import ExternalFile
-from Defines import STANDARD_RETURN, EXTERNAL_FILE, ICON
+from Defines import STANDARD_RETURN, EXTERNAL_FILE
 import OsDepend
 import os
+import Resource
 
 #Tk.Frameクラスを継承
 class Password(Tk.Frame):
@@ -122,7 +123,7 @@ class Password(Tk.Frame):
         # 前面に配置
         self.master.attributes("-topmost", True)
         # アイコンをVIPSのロゴに変更
-        self.master.iconbitmap(default=ICON.VIPSTARCOIN)
+        self.master.iconbitmap(default=Resource.get_vips_icon_path())
         #閉じるボタンが押されたときの処理
         self.master.protocol("WM_DELETE_WINDOW", self.__on_closing)
         #GUIを表示
