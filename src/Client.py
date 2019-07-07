@@ -62,7 +62,10 @@ class RpcClient:
             raise ConnectionError(e.args)
 
         if response.status_code != requests.codes.ok:
-            return dict(response.json()["error"])
+            try:
+                return dict(response.json()["error"])
+            except json.decoder.JSONDecodeError:
+                raise ConnectionError(response)
         else:
             return response.json()["result"]
 
